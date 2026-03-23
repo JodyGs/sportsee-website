@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import {
   BarChart,
   Bar,
@@ -8,17 +9,11 @@ import {
   ResponsiveContainer,
   type TooltipProps,
 } from "recharts";
-import { USER_ACTIVITY } from "../mocks/userData";
+import type { ActivitySession } from "../types/user";
 
-const sessions = USER_ACTIVITY.sessions;
-const kgMin = Math.min(...sessions.map((s) => s.kilogram)) - 1;
-const kgMax = Math.max(...sessions.map((s) => s.kilogram)) + 2;
-
-const data = sessions.map((s, i) => ({
-  name: (i + 1).toString(),
-  kilogram: s.kilogram,
-  calories: s.calories,
-}));
+interface DailyActivityProps {
+  sessions: ActivitySession[];
+}
 
 function CustomTooltip({ active, payload }: TooltipProps<number, string>) {
   if (active && payload && payload.length >= 2) {
@@ -32,7 +27,18 @@ function CustomTooltip({ active, payload }: TooltipProps<number, string>) {
   return null;
 }
 
-export default function DailyActivity() {
+export default function DailyActivity({ sessions }: DailyActivityProps) {
+  const { data, kgMin, kgMax } = useMemo(() => {
+    const kgMin = Math.min(...sessions.map((s) => s.kilogram)) - 1;
+    const kgMax = Math.max(...sessions.map((s) => s.kilogram)) + 2;
+    const data = sessions.map((s, i) => ({
+      name: (i + 1).toString(),
+      kilogram: s.kilogram,
+      calories: s.calories,
+    }));
+    return { data, kgMin, kgMax };
+  }, [sessions]);
+
   return (
     <div className="bg-[#FBFBFB] rounded-[5px] p-6 w-full">
       <div className="flex justify-between items-center mb-6">

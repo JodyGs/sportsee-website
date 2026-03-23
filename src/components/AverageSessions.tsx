@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import {
   LineChart,
   Line,
@@ -6,15 +7,13 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { USER_AVERAGE_SESSIONS } from "../mocks/userData";
+import type { AverageSession } from "../types/user";
+
+interface AverageSessionsProps {
+  sessions: AverageSession[];
+}
 
 const dayLabels = ["L", "M", "M", "J", "V", "S", "D"];
-
-const data = USER_AVERAGE_SESSIONS.sessions.map((s, i) => ({
-  day: `${dayLabels[i]}_${i}`,
-  label: dayLabels[i],
-  sessionLength: s.sessionLength,
-}));
 
 function CustomTooltip({
   active,
@@ -33,7 +32,17 @@ function CustomTooltip({
   return null;
 }
 
-export default function AverageSessions() {
+export default function AverageSessions({ sessions }: AverageSessionsProps) {
+  const data = useMemo(
+    () =>
+      sessions.map((s, i) => ({
+        day: `${dayLabels[i]}_${i}`,
+        label: dayLabels[i],
+        sessionLength: s.sessionLength,
+      })),
+    [sessions]
+  );
+
   return (
     <div className="bg-[#FF0000] rounded-[5px] relative overflow-hidden w-full h-[263px]">
       <h2 className="text-white/50 text-[15px] font-medium px-7 pt-7 absolute z-10">

@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
 import DailyActivity from "./components/DailyActivity";
@@ -6,12 +7,82 @@ import Performance from "./components/Performance";
 import Score from "./components/Score";
 import KeyDataCard from "./components/KeyDataCard";
 import { Fire, Protein, Glucid, Lipid } from "./svgs";
-import { USER_MAIN_DATA } from "./mocks/userData";
+import {
+  getUserMainData,
+  getUserActivity,
+  getUserAverageSessions,
+  getUserPerformance,
+} from "./services/userService";
+import type { UserMainData, UserActivity, UserAverageSessions, UserPerformance } from "./types/user";
+
+const USER_ID = 12;
 
 function App() {
-  const { firstName } = USER_MAIN_DATA.userInfos;
+  const [userData, setUserData] = useState<UserMainData | null>(null);
+  const [activity, setActivity] = useState<UserActivity | null>(null);
+  const [averageSessions, setAverageSessions] = useState<UserAverageSessions | null>(null);
+  const [performance, setPerformance] = useState<UserPerformance | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const [mainData, activityData, sessionsData, perfData] =
+          await Promise.all([
+            getUserMainData(USER_ID),
+            getUserActivity(USER_ID),
+            getUserAverageSessions(USER_ID),
+            getUserPerformance(USER_ID),
+          ]);
+        setUserData(mainData);
+        setActivity(activityData);
+        setAverageSessions(sessionsData);
+        setPerformance(perfData);
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : "Une erreur est survenue"
+        );
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white">
+        <Header />
+        <div className="flex">
+          <Sidebar />
+          <main className="flex-1 px-[107px] py-[68px]">
+            <p className="text-lg text-[#20253A]">Chargement...</p>
+          </main>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !userData || !activity || !averageSessions || !performance) {
+    return (
+      <div className="min-h-screen bg-white">
+        <Header />
+        <div className="flex">
+          <Sidebar />
+          <main className="flex-1 px-[107px] py-[68px]">
+            <p className="text-lg text-red-500">
+              Erreur : {error ?? "Impossible de charger les données"}
+            </p>
+          </main>
+        </div>
+      </div>
+    );
+  }
+
+  const { firstName } = userData.userInfos;
   const { calorieCount, proteinCount, carbohydrateCount, lipidCount } =
-    USER_MAIN_DATA.keyData;
+    userData.keyData;
 
   return (
     <div className="min-h-screen bg-white">
@@ -29,11 +100,11 @@ function App() {
           <div className="flex gap-[31px]">
             {/* Left: Charts */}
             <div className="flex-1 flex flex-col gap-[28px]">
-              <DailyActivity />
+              <DailyActivity sessions={activity.sessions} />
               <div className="grid grid-cols-3 gap-[30px]">
-                <AverageSessions />
-                <Performance />
-                <Score />
+                <AverageSessions sessions={averageSessions.sessions} />
+                <Performance kind={performance.kind} data={performance.data} />
+                <Score todayScore={userData.todayScore} />
               </div>
             </div>
 

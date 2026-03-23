@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import {
   Radar,
   RadarChart,
@@ -5,7 +6,12 @@ import {
   PolarAngleAxis,
   ResponsiveContainer,
 } from "recharts";
-import { USER_PERFORMANCE } from "../mocks/userData";
+import type { PerformanceData } from "../types/user";
+
+interface PerformanceProps {
+  kind: Record<number, string>;
+  data: PerformanceData[];
+}
 
 const kindLabels: Record<string, string> = {
   cardio: "Cardio",
@@ -16,12 +22,16 @@ const kindLabels: Record<string, string> = {
   intensity: "Intensité",
 };
 
-const data = USER_PERFORMANCE.data.map((d) => ({
-  subject: kindLabels[USER_PERFORMANCE.kind[d.kind]] ?? USER_PERFORMANCE.kind[d.kind],
-  value: d.value,
-}));
+export default function Performance({ kind, data: perfData }: PerformanceProps) {
+  const data = useMemo(
+    () =>
+      perfData.map((d) => ({
+        subject: kindLabels[kind[d.kind]] ?? kind[d.kind],
+        value: d.value,
+      })),
+    [kind, perfData]
+  );
 
-export default function Performance() {
   return (
     <div className="bg-[#282D30] rounded-[5px] w-full h-[263px] flex items-center justify-center">
       <ResponsiveContainer width="100%" height="100%">
