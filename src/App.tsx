@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useParams, useSearchParams } from "react-router-dom";
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
 import DailyActivity from "./components/DailyActivity";
@@ -15,9 +16,12 @@ import {
 } from "./services/userService";
 import type { UserMainData, UserActivity, UserAverageSessions, UserPerformance } from "./types/user";
 
-const USER_ID = 12;
-
 function App() {
+  const { id } = useParams<{ id: string }>();
+  const [searchParams] = useSearchParams();
+  const userId = Number(id);
+  const isMock = searchParams.get("mock") === "true";
+
   const [userData, setUserData] = useState<UserMainData | null>(null);
   const [activity, setActivity] = useState<UserActivity | null>(null);
   const [averageSessions, setAverageSessions] = useState<UserAverageSessions | null>(null);
@@ -30,25 +34,28 @@ function App() {
       try {
         const [mainData, activityData, sessionsData, perfData] =
           await Promise.all([
-            getUserMainData(USER_ID),
-            getUserActivity(USER_ID),
-            getUserAverageSessions(USER_ID),
-            getUserPerformance(USER_ID),
+            getUserMainData(userId, isMock),
+            getUserActivity(userId, isMock),
+            getUserAverageSessions(userId, isMock),
+            getUserPerformance(userId, isMock),
           ]);
         setUserData(mainData);
         setActivity(activityData);
         setAverageSessions(sessionsData);
         setPerformance(perfData);
       } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "Une erreur est survenue"
-        );
+        const message = err instanceof Error ? err.message : "";
+        if (message.includes("404")) {
+          setError("Utilisateur non trouvé");
+        } else {
+          setError(message || "Une erreur est survenue");
+        }
       } finally {
         setLoading(false);
       }
     }
     fetchData();
-  }, []);
+  }, [userId, isMock]);
 
   if (loading) {
     return (
