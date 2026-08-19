@@ -15,6 +15,20 @@ interface AverageSessionsProps {
 
 const dayLabels = ["L", "M", "M", "J", "V", "S", "D"];
 
+// Darkens the card to the right of the hovered point, like the mockup's hover state
+function CustomCursor({ points }: { points?: Array<{ x: number }> }) {
+  if (!points || !points.length) return null;
+  return (
+    <rect
+      x={points[0].x}
+      y={0}
+      width="100%"
+      height="100%"
+      fill="rgba(0,0,0,0.1)"
+    />
+  );
+}
+
 function CustomTooltip({
   active,
   payload,
@@ -61,11 +75,17 @@ export default function AverageSessions({ sessions }: AverageSessionsProps) {
             tickFormatter={(value: string) => value.split("_")[0]}
           />
           <YAxis hide domain={["dataMin - 10", "dataMax + 10"]} />
-          <Tooltip content={<CustomTooltip />} />
+          <Tooltip content={<CustomTooltip />} cursor={<CustomCursor />} />
+          <defs>
+            <linearGradient id="sessionLineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="rgba(255,255,255,0.3)" />
+              <stop offset="100%" stopColor="rgba(255,255,255,1)" />
+            </linearGradient>
+          </defs>
           <Line
             type="natural"
             dataKey="sessionLength"
-            stroke="rgba(255,255,255,0.7)"
+            stroke="url(#sessionLineGradient)"
             strokeWidth={2}
             dot={false}
             activeDot={{

@@ -25,7 +25,9 @@ const kindLabels: Record<string, string> = {
 export default function Performance({ kind, data: perfData }: PerformanceProps) {
   const data = useMemo(
     () =>
-      perfData.map((d) => ({
+      // Reversed so the radar reads Intensité at the top then clockwise
+      // (Vitesse, Force, Endurance, Énergie, Cardio) like the mockup
+      [...perfData].reverse().map((d) => ({
         subject: kindLabels[kind[d.kind]] ?? kind[d.kind],
         value: d.value,
       })),

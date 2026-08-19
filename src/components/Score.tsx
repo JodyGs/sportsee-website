@@ -1,18 +1,18 @@
 import { useMemo } from "react";
-import { RadialBarChart, RadialBar, ResponsiveContainer } from "recharts";
+import {
+  RadialBarChart,
+  RadialBar,
+  PolarAngleAxis,
+  ResponsiveContainer,
+} from "recharts";
 
 interface ScoreProps {
   todayScore: number;
 }
 
 export default function Score({ todayScore }: ScoreProps) {
-  const data = useMemo(
-    () => [
-      { value: 100, fill: "#FBFBFB" },
-      { value: todayScore * 100, fill: "#FF0000" },
-    ],
-    [todayScore]
-  );
+  const percentage = Math.round(todayScore * 100);
+  const data = useMemo(() => [{ value: percentage }], [percentage]);
 
   return (
     <div className="bg-[#FBFBFB] rounded-[5px] w-full h-[263px] relative">
@@ -23,20 +23,31 @@ export default function Score({ todayScore }: ScoreProps) {
         <RadialBarChart
           cx="50%"
           cy="50%"
-          innerRadius="0%"
-          outerRadius="80%"
+          innerRadius={75}
+          outerRadius={85}
           barSize={10}
           data={data}
           startAngle={90}
           endAngle={450}
         >
-          <RadialBar dataKey="value" cornerRadius={10} background={false} />
+          <PolarAngleAxis
+            type="number"
+            domain={[0, 100]}
+            angleAxisId={0}
+            tick={false}
+          />
+          <RadialBar
+            dataKey="value"
+            fill="#FF0000"
+            cornerRadius={10}
+            background={false}
+          />
         </RadialBarChart>
       </ResponsiveContainer>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <div className="w-[130px] h-[130px] bg-white rounded-full flex flex-col items-center justify-center">
           <span className="text-[26px] font-bold text-[#282D30]">
-            {todayScore * 100}%
+            {percentage}%
           </span>
           <span className="text-[16px] text-[#74798C]">de votre</span>
           <span className="text-[16px] text-[#74798C]">objectif</span>
