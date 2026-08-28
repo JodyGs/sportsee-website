@@ -63,7 +63,7 @@ function App() {
         <Header />
         <div className="flex">
           <Sidebar />
-          <main className="flex-1 px-[107px] py-[68px]">
+          <main className="flex-1 px-6 py-8 xl:px-[107px] xl:py-[68px]">
             <p className="text-lg text-[#20253A]">Chargement...</p>
           </main>
         </div>
@@ -77,7 +77,7 @@ function App() {
         <Header />
         <div className="flex">
           <Sidebar />
-          <main className="flex-1 px-[107px] py-[68px]">
+          <main className="flex-1 px-6 py-8 xl:px-[107px] xl:py-[68px]">
             <p className="text-lg text-red-500">
               Erreur : {error ?? "Impossible de charger les données"}
             </p>
@@ -87,58 +87,56 @@ function App() {
     );
   }
 
-  const { firstName } = userData.userInfos;
-  const { calorieCount, proteinCount, carbohydrateCount, lipidCount } =
-    userData.keyData;
+  const { firstName, keyData } = userData;
 
   return (
     <div className="min-h-screen bg-white">
       <Header />
       <div className="flex">
         <Sidebar />
-        <main className="flex-1 px-[107px] py-[68px]">
-          <h1 className="text-5xl font-medium mb-2">
+        <main className="flex-1 px-6 py-8 xl:px-[107px] xl:py-[68px]">
+          <h1 className="text-4xl xl:text-5xl font-medium mb-2">
             Bonjour <span className="text-[#FF0101]">{firstName}</span>
           </h1>
-          <p className="text-lg text-[#20253A] mb-[77px]">
+          <p className="text-lg text-[#20253A] mb-10 xl:mb-[77px]">
             Félicitation ! Vous avez explosé vos objectifs hier 👏
           </p>
 
-          <div className="flex gap-[31px]">
+          <div className="flex gap-5 xl:gap-[31px]">
             {/* Left: Charts */}
-            <div className="flex-1 flex flex-col gap-[28px]">
-              <DailyActivity sessions={activity.sessions} />
-              <div className="grid grid-cols-3 gap-[30px]">
+            <div className="flex-1 min-w-0 flex flex-col gap-5 xl:gap-[28px]">
+              <DailyActivity activity={activity} />
+              <div className="grid grid-cols-3 gap-5 xl:gap-[30px]">
                 <AverageSessions sessions={averageSessions.sessions} />
-                <Performance kind={performance.kind} data={performance.data} />
-                <Score todayScore={userData.todayScore} />
+                <Performance data={performance.data} />
+                <Score percentage={userData.scorePercentage} />
               </div>
             </div>
 
             {/* Right: Key data cards */}
-            <div className="flex flex-col gap-[39px] w-[258px]">
+            <div className="flex flex-col gap-5 xl:gap-[39px] w-[228px] xl:w-[258px] shrink-0">
               <KeyDataCard
                 icon={<Fire className="w-4 h-5" />}
                 bgColor="rgba(255,0,0,0.07)"
-                value={`${calorieCount.toLocaleString("en-US")}kCal`}
+                value={keyData.calorieCountFormatted}
                 label="Calories"
               />
               <KeyDataCard
                 icon={<Protein className="w-[19px] h-[19px]" />}
                 bgColor="rgba(74,184,255,0.1)"
-                value={`${proteinCount}g`}
+                value={`${keyData.proteinCount}g`}
                 label="Protéines"
               />
               <KeyDataCard
                 icon={<Glucid className="w-[17px] h-5" />}
                 bgColor="rgba(253,204,12,0.1)"
-                value={`${carbohydrateCount}g`}
+                value={`${keyData.carbohydrateCount}g`}
                 label="Glucides"
               />
               <KeyDataCard
                 icon={<Lipid className="w-5 h-[19px]" />}
                 bgColor="rgba(253,81,129,0.1)"
-                value={`${lipidCount}g`}
+                value={`${keyData.lipidCount}g`}
                 label="Lipides"
               />
             </div>

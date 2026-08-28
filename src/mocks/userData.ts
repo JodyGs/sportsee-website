@@ -1,15 +1,15 @@
 import type {
-  UserMainData,
-  UserActivity,
-  UserAverageSessions,
-  UserPerformance,
+  RawUserMainData,
+  RawUserActivity,
+  RawUserAverageSessions,
+  RawUserPerformance,
 } from "../types/user";
 
-const USER_MAIN_DATA: Record<number, UserMainData> = {
+const USER_MAIN_DATA: Record<number, RawUserMainData> = {
   12: {
     id: 12,
     userInfos: {
-      firstName: "Karl Mock",
+      firstName: "Karl",
       lastName: "Dovineau",
       age: 31,
     },
@@ -24,7 +24,7 @@ const USER_MAIN_DATA: Record<number, UserMainData> = {
   18: {
     id: 18,
     userInfos: {
-      firstName: "Cecilia Mock",
+      firstName: "Cecilia",
       lastName: "Ratorez",
       age: 34,
     },
@@ -38,7 +38,7 @@ const USER_MAIN_DATA: Record<number, UserMainData> = {
   },
 };
 
-const USER_ACTIVITY: Record<number, UserActivity> = {
+const USER_ACTIVITY: Record<number, RawUserActivity> = {
   12: {
     userId: 12,
     sessions: [
@@ -65,7 +65,7 @@ const USER_ACTIVITY: Record<number, UserActivity> = {
   },
 };
 
-const USER_AVERAGE_SESSIONS: Record<number, UserAverageSessions> = {
+const USER_AVERAGE_SESSIONS: Record<number, RawUserAverageSessions> = {
   12: {
     userId: 12,
     sessions: [
@@ -92,7 +92,7 @@ const USER_AVERAGE_SESSIONS: Record<number, UserAverageSessions> = {
   },
 };
 
-const USER_PERFORMANCE: Record<number, UserPerformance> = {
+const USER_PERFORMANCE: Record<number, RawUserPerformance> = {
   12: {
     userId: 12,
     kind: {

@@ -20,7 +20,7 @@ export default function Sidebar() {
           </button>
         ))}
       </div>
-      <p className="text-white text-xs absolute bottom-[59px] -rotate-90 whitespace-nowrap">
+      <p className="text-white text-xs absolute bottom-[80px] -rotate-90 whitespace-nowrap">
         Copyright, SportSee 2020
       </p>
     </aside>

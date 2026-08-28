@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import {
   Radar,
   RadarChart,
@@ -7,41 +6,24 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import type { PerformanceData } from "../types/user";
+import { useMediaQuery } from "../hooks/useMediaQuery";
 
 interface PerformanceProps {
-  kind: Record<number, string>;
   data: PerformanceData[];
 }
 
-const kindLabels: Record<string, string> = {
-  cardio: "Cardio",
-  energy: "Énergie",
-  endurance: "Endurance",
-  strength: "Force",
-  speed: "Vitesse",
-  intensity: "Intensité",
-};
-
-export default function Performance({ kind, data: perfData }: PerformanceProps) {
-  const data = useMemo(
-    () =>
-      // Reversed so the radar reads Intensité at the top then clockwise
-      // (Vitesse, Force, Endurance, Énergie, Cardio) like the mockup
-      [...perfData].reverse().map((d) => ({
-        subject: kindLabels[kind[d.kind]] ?? kind[d.kind],
-        value: d.value,
-      })),
-    [kind, perfData]
-  );
+export default function Performance({ data }: PerformanceProps) {
+  // The card shrinks below xl, so pull the radar in to keep the labels inside it
+  const isWide = useMediaQuery("(min-width: 1280px)");
 
   return (
     <div className="bg-[#282D30] rounded-[5px] w-full h-[263px] flex items-center justify-center">
       <ResponsiveContainer width="100%" height="100%">
-        <RadarChart cx="50%" cy="50%" outerRadius="65%" data={data}>
+        <RadarChart cx="50%" cy="50%" outerRadius={isWide ? "65%" : "55%"} data={data}>
           <PolarGrid radialLines={false} />
           <PolarAngleAxis
             dataKey="subject"
-            tick={{ fill: "#FFF", fontSize: 12 }}
+            tick={{ fill: "#FFF", fontSize: isWide ? 12 : 10 }}
           />
           <Radar
             dataKey="value"

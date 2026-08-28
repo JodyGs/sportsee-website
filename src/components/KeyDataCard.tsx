@@ -14,7 +14,7 @@ export default function KeyDataCard({
   label,
 }: KeyDataCardProps) {
   return (
-    <div className="flex items-center gap-6 bg-[#FBFBFB] rounded-[5px] px-8 py-5">
+    <div className="flex items-center gap-4 xl:gap-6 bg-[#FBFBFB] rounded-[5px] px-5 xl:px-8 py-5">
       <div
         className="w-[60px] h-[60px] rounded-[6px] flex items-center justify-center"
         style={{ backgroundColor: bgColor }}

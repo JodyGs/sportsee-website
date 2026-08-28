@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import {
   BarChart,
   Bar,
@@ -9,16 +8,16 @@ import {
   ResponsiveContainer,
   type TooltipProps,
 } from "recharts";
-import type { ActivitySession } from "../types/user";
+import type { UserActivity } from "../types/user";
 
 interface DailyActivityProps {
-  sessions: ActivitySession[];
+  activity: UserActivity;
 }
 
 function CustomTooltip({ active, payload }: TooltipProps<number, string>) {
   if (active && payload && payload.length >= 2) {
     return (
-      <div className="bg-[#E60000] text-white text-[7px] p-2 flex flex-col items-center gap-6">
+      <div className="bg-[#E60000] text-white text-[12px] p-2 flex flex-col items-center gap-6">
         <p>{payload[0].value}kg</p>
         <p>{payload[1].value}kCal</p>
       </div>
@@ -27,25 +26,16 @@ function CustomTooltip({ active, payload }: TooltipProps<number, string>) {
   return null;
 }
 
-export default function DailyActivity({ sessions }: DailyActivityProps) {
-  const { data, kgMin, kgMax } = useMemo(() => {
-    const kgMin = Math.min(...sessions.map((s) => s.kilogram)) - 1;
-    const kgMax = Math.max(...sessions.map((s) => s.kilogram)) + 2;
-    const data = sessions.map((s, i) => ({
-      name: (i + 1).toString(),
-      kilogram: s.kilogram,
-      calories: s.calories,
-    }));
-    return { data, kgMin, kgMax };
-  }, [sessions]);
+export default function DailyActivity({ activity }: DailyActivityProps) {
+  const { sessions, kilogramMin, kilogramMax } = activity;
 
   return (
     <div className="bg-[#FBFBFB] rounded-[5px] p-6 w-full">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-wrap gap-x-8 gap-y-2 justify-between items-center mb-6">
         <h2 className="text-[15px] font-medium text-[#20253A]">
           Activité quotidienne
         </h2>
-        <div className="flex gap-8 items-center">
+        <div className="flex flex-wrap gap-x-8 gap-y-2 items-center">
           <div className="flex items-center gap-[10px]">
             <span className="w-2 h-2 rounded-full bg-[#282D30]" />
             <span className="text-[14px] text-[#74798C]">Poids (kg)</span>
@@ -59,10 +49,10 @@ export default function DailyActivity({ sessions }: DailyActivityProps) {
         </div>
       </div>
       <ResponsiveContainer width="100%" height={220}>
-        <BarChart data={data} barGap={8} barCategoryGap="35%">
+        <BarChart data={sessions} barGap={8} barCategoryGap="35%">
           <CartesianGrid strokeDasharray="3 3" vertical={false} />
           <XAxis
-            dataKey="name"
+            dataKey="label"
             tickLine={false}
             tick={{ fill: "#9B9EAC", fontSize: 14 }}
             stroke="#DEDEDE"
@@ -71,7 +61,7 @@ export default function DailyActivity({ sessions }: DailyActivityProps) {
           <YAxis
             yAxisId="right"
             orientation="right"
-            domain={[kgMin, kgMax]}
+            domain={[kilogramMin, kilogramMax]}
             tickLine={false}
             axisLine={false}
             tick={{ fill: "#9B9EAC", fontSize: 14 }}

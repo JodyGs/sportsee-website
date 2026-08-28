@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import {
   LineChart,
   Line,
@@ -12,8 +11,6 @@ import type { AverageSession } from "../types/user";
 interface AverageSessionsProps {
   sessions: AverageSession[];
 }
-
-const dayLabels = ["L", "M", "M", "J", "V", "S", "D"];
 
 // Darkens the card to the right of the hovered point, like the mockup's hover state
 function CustomCursor({ points }: { points?: Array<{ x: number }> }) {
@@ -47,32 +44,24 @@ function CustomTooltip({
 }
 
 export default function AverageSessions({ sessions }: AverageSessionsProps) {
-  const data = useMemo(
-    () =>
-      sessions.map((s, i) => ({
-        day: `${dayLabels[i]}_${i}`,
-        label: dayLabels[i],
-        sessionLength: s.sessionLength,
-      })),
-    [sessions]
-  );
-
   return (
     <div className="bg-[#FF0000] rounded-[5px] relative overflow-hidden w-full h-[263px]">
-      <h2 className="text-white/50 text-[15px] font-medium px-7 pt-7 absolute z-10">
+      <h2 className="text-white/50 text-[15px] font-medium px-5 xl:px-7 pt-7 absolute z-10">
         Durée moyenne des sessions
       </h2>
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
-          data={data}
+          data={sessions}
           margin={{ top: 70, right: 10, bottom: 20, left: 10 }}
         >
           <XAxis
-            dataKey="day"
+            dataKey="key"
             axisLine={false}
             tickLine={false}
             tick={{ fill: "rgba(255,255,255,0.5)", fontSize: 12 }}
-            tickFormatter={(value: string) => value.split("_")[0]}
+            tickFormatter={(_value: string, index: number) =>
+              sessions[index]?.label ?? ""
+            }
           />
           <YAxis hide domain={["dataMin - 10", "dataMax + 10"]} />
           <Tooltip content={<CustomTooltip />} cursor={<CustomCursor />} />
