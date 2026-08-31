@@ -44,10 +44,7 @@ export default function Score({ percentage }: ScoreProps) {
         </RadialBarChart>
       </ResponsiveContainer>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        {/* Recharts dimensionne l'anneau sur min(largeur, hauteur) de la carte.
-            Le disque doit suivre la même base, sinon il recouvre l'anneau sur
-            une carte plus large que haute. La hauteur étant fixée à 263px,
-            min(52%, 137px) reproduit ce min() côté CSS. */}
+
         <div className="w-[min(52%,137px)] aspect-square bg-white rounded-full flex flex-col items-center justify-center">
           <span className="text-xl xl:text-[26px] font-bold text-[#282D30]">
             {percentage}%
